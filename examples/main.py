@@ -1,6 +1,8 @@
 import final_project
 
-test = final_project.test(1)
-print(test)
-# winddata_file_path = "./inputs/1997-1999.nc"
-# winddata1 = WindData(winddata_file_path)
+winddata_file_path = "./inputs/1997-1999.nc"
+winddata1 = final_project.WindData(winddata_file_path)
+
+latitudes1 = winddata1.get_latitude()
+
+print(latitudes1)
