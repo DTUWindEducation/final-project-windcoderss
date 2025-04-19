@@ -89,4 +89,38 @@ class WindData:
             wind_data[component_name[i]] = np.array([data[:, 0, 0], data[:, 1, 0], data[:, 0, 1], data[:, 1, 1]])
 
         return wind_data
+    
+    def compute_wind_speed_direction(self, location, component_name):
+        
+        wind_data = self.get_components_of_wind(component_name)
+        location_index = np.where((wind_data['locations'] == location).all(axis=1))[0][0]
 
+        speed = {}
+        direction = {}
+        speed_10m = np.zeros(len(wind_data['u10'][0]))
+        speed_100m = np.zeros(len(wind_data['u100'][0]))
+        direction_10m = np.zeros(len(wind_data['u10'][0]))
+        direction_100m = np.zeros(len(wind_data['u100'][0]))
+        for i in range(len(wind_data[component_name[0]][0])):
+            x_value_10m = wind_data['u10'][location_index][i]
+            y_value_10m = wind_data['v10'][location_index][i]
+            x_value_100m = wind_data['u100'][location_index][i]
+            y_value_100m = wind_data['v100'][location_index][i]
+
+            complex_vector_10m = x_value_10m + y_value_10m*1j
+            complex_vector_100m = x_value_100m + y_value_100m*1j
+
+            speed_10m[i] = np.abs(complex_vector_10m)
+            speed_100m[i] = np.abs(complex_vector_100m)
+
+            direction_math_10m = np.rad2deg(np.angle(complex_vector_10m))
+            direction_math_100m = np.rad2deg(np.angle(complex_vector_100m))
+
+            direction_10m[i] = (90 - direction_math_10m) % 360
+            direction_100m[i] = (90 - direction_math_100m) % 360
+        
+        speed['10m'] = speed_10m
+        speed['100m'] = speed_100m
+        direction['10m'] = direction_10m
+        direction['100m'] = direction_100m
+        return speed, direction
