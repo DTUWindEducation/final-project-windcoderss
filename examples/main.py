@@ -14,10 +14,10 @@ winddata1 = final_project.WindData(winddata_file_path)
 latitudes = winddata1.get_latitude()
 longitudes = winddata1.get_longitudes()
 
-location1 = np.array([latitudes[0], longitudes[0]])
-location2 = np.array([latitudes[1], longitudes[0]])
-location3 = np.array([latitudes[0], longitudes[1]])
-location4 = np.array([latitudes[1], longitudes[1]])
+location2 = np.array([latitudes[0], longitudes[0]])
+location1 = np.array([latitudes[1], longitudes[0]])
+location4 = np.array([latitudes[0], longitudes[1]])
+location3 = np.array([latitudes[1], longitudes[1]])
 
 component_name = ['u10', 'v10', 'u100', 'v100']
 wind_data1 = winddata1.get_components_of_wind(component_name)
