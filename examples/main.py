@@ -2,7 +2,7 @@ import final_project
 import numpy as np
 import matplotlib.pyplot as plt
 
-winddata_file_path = "./inputs/2000-2002.nc"
+winddata_file_path = "./inputs/1997-1999.nc"
 winddata1 = final_project.WindData(winddata_file_path)
 
 latitudes = winddata1.get_latitude()
@@ -16,15 +16,19 @@ location4 = np.array([latitudes[1], longitudes[1]])
 component_name = ['u10', 'v10', 'u100', 'v100']
 wind_data1 = winddata1.get_components_of_wind(component_name)
 
-speed, direction = winddata1.compute_wind_speed_direction(location1, component_name)
+speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
+speed_loc2, direction_loc2 = winddata1.compute_wind_speed_direction(location2, component_name)
+speed_loc3, direction_loc3 = winddata1.compute_wind_speed_direction(location3, component_name)
+speed_loc4, direction_loc4 = winddata1.compute_wind_speed_direction(location4, component_name)
+
 
 # Extract wind speeds at 10m and 100m
-speed_10m = speed['10m']
-speed_100m = speed['100m']
+speed_10m = speed_loc1['10m']
+speed_100m = speed_loc1['100m']
 
 # Extract wind directions at 10m and 100m
-direction_10m = direction['10m']
-direction_100m = direction['100m']
+direction_10m = direction_loc1['10m']
+direction_100m = direction_loc1['100m']
 
 # Create a figure with two subplots
 fig, axs = plt.subplots(2, 1, figsize=(10, 12))
