@@ -3,6 +3,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 winddata_file_path = "./inputs/1997-1999.nc"
+
+# Coordinates for the location we want to get the speed and direction
+loc_lon = 7.9061
+loc_lat = 55.5297
+height = ['10m']         # 10m or 100m
+
 winddata1 = final_project.WindData(winddata_file_path)
 
 latitudes = winddata1.get_latitude()
@@ -20,6 +26,9 @@ speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, c
 speed_loc2, direction_loc2 = winddata1.compute_wind_speed_direction(location2, component_name)
 speed_loc3, direction_loc3 = winddata1.compute_wind_speed_direction(location3, component_name)
 speed_loc4, direction_loc4 = winddata1.compute_wind_speed_direction(location4, component_name)
+
+speed_locs = [speed_loc1, speed_loc2, speed_loc3, speed_loc4]
+direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4]
 
 
 # Extract wind speeds at 10m and 100m
@@ -53,3 +62,5 @@ axs[1].legend()
 plt.tight_layout()
 plt.show()
 
+Horsrev_10m = wind_data1.interpolate_at_loc()
+print(interpolated_speed, interpolated_direction)
