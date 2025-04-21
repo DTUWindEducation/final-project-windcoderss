@@ -36,6 +36,7 @@ class WindData:
         for i in range(len(latitudes)):
             latitudes_out[i] = latitudes[i]
 
+        rootgrp.close()
         return latitudes_out
     
     def get_longitudes(self):
@@ -52,7 +53,7 @@ class WindData:
         longitudes_out = np.zeros(len(longitudes))
         for i in range(len(longitudes)):
             longitudes_out[i] = longitudes[i]
-
+        rootgrp.close()
         return longitudes_out
     
 
@@ -87,7 +88,7 @@ class WindData:
             # Extract the data for the current component
             data = rootgrp.variables[component_name[i]]
             wind_data[component_name[i]] = np.array([data[:, 0, 0], data[:, 1, 0], data[:, 0, 1], data[:, 1, 1]])
-
+        rootgrp.close()
         return wind_data
     
     def compute_wind_speed_direction(self, location, component_name):

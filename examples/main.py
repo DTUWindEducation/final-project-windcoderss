@@ -32,31 +32,41 @@ direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4
 
 Hornsrev_10m_speed, Hornsrev_10m_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, height, loc_lon, loc_lat)
 
-# Extract wind speeds at 10m and 100m
-speed_10m = speed_loc1['10m']
-speed_100m = speed_loc1['100m']
+# Extract wind speeds at 10m for all locations
+speed_10m_loc1 = speed_loc1['10m']
+speed_10m_loc2 = speed_loc2['10m']
+speed_10m_loc3 = speed_loc3['10m']
+speed_10m_loc4 = speed_loc4['10m']
 
-# Extract wind directions at 10m and 100m
-direction_10m = direction_loc1['10m']
-direction_100m = direction_loc1['100m']
+# Extract wind directions at 10m for all locations
+direction_10m_loc1 = direction_loc1['10m']
+direction_10m_loc2 = direction_loc2['10m']
+direction_10m_loc3 = direction_loc3['10m']
+direction_10m_loc4 = direction_loc4['10m']
 
 # Create a figure with two subplots
 fig, axs = plt.subplots(2, 1, figsize=(10, 12))
 
-# Plot wind speed on the first subplot
-axs[0].plot(speed_10m, label='10m Wind Speed')
-axs[0].plot(speed_100m, label='100m Wind Speed')
+# Plot wind speed at 10m for all locations and Hornsrev interpolated speed
+axs[0].plot(speed_10m_loc1, label='Loc1 10m Wind Speed')
+axs[0].plot(speed_10m_loc2, label='Loc2 10m Wind Speed')
+axs[0].plot(speed_10m_loc3, label='Loc3 10m Wind Speed')
+axs[0].plot(speed_10m_loc4, label='Loc4 10m Wind Speed')
+axs[0].plot(Hornsrev_10m_speed, label='Hornsrev 10m Wind Speed', linestyle='--')
 axs[0].set_xlabel('Time Index')
 axs[0].set_ylabel('Wind Speed (m/s)')
-axs[0].set_title('Wind Speed at 10m and 100m')
+axs[0].set_title('Wind Speed at 10m for All Locations and Hornsrev')
 axs[0].legend()
 
-# Plot wind direction on the second subplot
-axs[1].plot(direction_10m, label='10m Wind Direction')
-axs[1].plot(direction_100m, label='100m Wind Direction')
+# Plot wind direction at 10m for all locations and Hornsrev interpolated direction
+axs[1].plot(direction_10m_loc1, label='Loc1 10m Wind Direction')
+axs[1].plot(direction_10m_loc2, label='Loc2 10m Wind Direction')
+axs[1].plot(direction_10m_loc3, label='Loc3 10m Wind Direction')
+axs[1].plot(direction_10m_loc4, label='Loc4 10m Wind Direction')
+axs[1].plot(Hornsrev_10m_direction, label='Hornsrev 10m Wind Direction', linestyle='--')
 axs[1].set_xlabel('Time Index')
 axs[1].set_ylabel('Wind Direction (degrees)')
-axs[1].set_title('Wind Direction at 10m and 100m')
+axs[1].set_title('Wind Direction at 10m for All Locations and Hornsrev')
 axs[1].legend()
 
 # Adjust layout and show the plot
