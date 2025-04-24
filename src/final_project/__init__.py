@@ -157,13 +157,15 @@ class WindData:
 
         return interpolated_speed, interpolated_direction
     
-    def windspeed_at_height(self, wind_speed, height, alpha):
-        """
-        Calculate wind speed at a given height using the power law.
-        """
-        if height > 55:
-            u = wind_speed['100m']*(height/100)**alpha
-        else:
-            u = wind_speed['10m']*(height/10)**alpha
 
-        return u
+# Functions that is not part of the class
+def windspeed_at_height(wind_speed, height, alpha):
+    """
+    Calculate wind speed at a given height using the power law.
+    """
+    if height > 55:
+        u = wind_speed['100m']*(height/100)**alpha
+    else:
+        u = wind_speed['10m']*(height/10)**alpha
+
+    return u

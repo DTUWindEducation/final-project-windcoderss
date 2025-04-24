@@ -36,10 +36,10 @@ direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4
 Hornsrev_10m_speed, Hornsrev_10m_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, height, loc_lon, loc_lat)
 
 # Using power law to calculate wind speed at height z for all locations
-wind_speed_height_z_loc1 = winddata1.windspeed_at_height(speed_loc1, height_z, alpha)
-wind_speed_height_z_loc2 = winddata1.windspeed_at_height(speed_loc2, height_z, alpha)
-wind_speed_height_z_loc3 = winddata1.windspeed_at_height(speed_loc3, height_z, alpha)
-wind_speed_height_z_loc4 = winddata1.windspeed_at_height(speed_loc4, height_z, alpha)
+wind_speed_height_z_loc1 = final_project.windspeed_at_height(speed_loc1, height_z, alpha)
+wind_speed_height_z_loc2 = final_project.windspeed_at_height(speed_loc2, height_z, alpha)
+wind_speed_height_z_loc3 = final_project.windspeed_at_height(speed_loc3, height_z, alpha)
+wind_speed_height_z_loc4 = final_project.windspeed_at_height(speed_loc4, height_z, alpha)
 
 
 # Extract wind speeds at 10m for all locations
