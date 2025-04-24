@@ -10,6 +10,7 @@ loc_lat = 55.5297
 height = '10m'         # 10m or 100m
 alpha = 0.143           # standard value
 height_z = 56
+component_name = ['u10', 'v10', 'u100', 'v100']
 
 winddata1 = final_project.WindData(winddata_file_path)
 
@@ -20,9 +21,6 @@ location2 = np.array([latitudes[0], longitudes[0]])
 location1 = np.array([latitudes[1], longitudes[0]])
 location4 = np.array([latitudes[0], longitudes[1]])
 location3 = np.array([latitudes[1], longitudes[1]])
-
-component_name = ['u10', 'v10', 'u100', 'v100']
-wind_data1 = winddata1.get_components_of_wind(component_name)
 
 speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
 speed_loc2, direction_loc2 = winddata1.compute_wind_speed_direction(location2, component_name)
