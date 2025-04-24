@@ -39,6 +39,7 @@ wind_speed_height_z_loc2 = final_project.windspeed_at_height(speed_loc2, height_
 wind_speed_height_z_loc3 = final_project.windspeed_at_height(speed_loc3, height_z, alpha)
 wind_speed_height_z_loc4 = final_project.windspeed_at_height(speed_loc4, height_z, alpha)
 
+Hornsrev_weibull_shape, Hornsrev_weibull_scale = final_project.fit_and_plot_weibull(Hornsrev_10m_speed)
 
 # Extract wind speeds at 10m for all locations
 speed_10m_loc1 = speed_loc1['10m']
