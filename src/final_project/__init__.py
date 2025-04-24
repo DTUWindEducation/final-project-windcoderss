@@ -36,6 +36,7 @@ class WindData:
         for i in range(len(latitudes)):
             latitudes_out[i] = latitudes[i]
 
+        rootgrp.close()
         return latitudes_out
     
     def get_longitudes(self):
@@ -52,7 +53,7 @@ class WindData:
         longitudes_out = np.zeros(len(longitudes))
         for i in range(len(longitudes)):
             longitudes_out[i] = longitudes[i]
-
+        rootgrp.close()
         return longitudes_out
     
 
@@ -87,7 +88,7 @@ class WindData:
             # Extract the data for the current component
             data = rootgrp.variables[component_name[i]]
             wind_data[component_name[i]] = np.array([data[:, 0, 0], data[:, 1, 0], data[:, 0, 1], data[:, 1, 1]])
-
+        rootgrp.close()
         return wind_data
     
     def compute_wind_speed_direction(self, location, component_name):
@@ -124,3 +125,34 @@ class WindData:
         direction['10m'] = direction_10m
         direction['100m'] = direction_100m
         return speed, direction
+
+    def interpolate_at_loc(self, speed_locs, direction_locs, height, loc_lon, loc_lat):
+        latitudes = self.get_latitude()    #Extract latitudes from the NetCDF file
+        longitudes = self.get_longitudes() #Extract longitudes from the NetCDF file
+       
+        x1, x2 = longitudes[0], longitudes[1]
+        y1, y2 = latitudes[1], latitudes[0]
+
+        x, y = loc_lat, loc_lon
+
+        # Bilinear interpolation estimates wind at Horns Rev by weighting values from the four surrounding points based on Horns Rev’s position within the grid
+        wx1 = (x2 - x) / (x2 - x1)    # closer to lon x1 (west)
+        wx2 = (x - x1) / (x2 - x1)    # closer to lon x2 (east)
+        wy1 = (y2 - y) / (y2 - y1)    # closer to lat y1 (south)
+        wy2 = (y - y1) / (y2 - y1)    # closer to lat y2 (north)
+
+        interpolated_speed = (
+        speed_locs[0][height] * wx1 * wy1 +  # L4
+        speed_locs[1][height] * wx2 * wy1 +  # L1
+        speed_locs[2][height] * wx1 * wy2 +  # L3
+        speed_locs[3][height] * wx2 * wy2    # L2
+         )
+
+        interpolated_direction = (
+        direction_locs[0][height] * wx1 * wy1 +
+        direction_locs[1][height] * wx2 * wy1 +
+        direction_locs[2][height] * wx1 * wy2 +
+        direction_locs[3][height] * wx2 * wy2
+         )
+
+        return interpolated_speed, interpolated_direction
