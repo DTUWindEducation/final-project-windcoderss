@@ -62,3 +62,54 @@ def test_get_components_of_wind():
     for component in component_name:
         assert component in wind_data1  # check if each component name exists in the dictionary
         assert len(wind_data1['u10']) == 4  # check if the component has size 4 which is the four locations
+
+def test_compute_wind_speed_direction():
+    """Check if wind speed and direction is calculated correctly"""
+    # given
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    path_resp_file = DATA_DIR
+    winddata1 = final_project.WindData(path_resp_file)
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[0], longitudes[0]])
+    # when
+    speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
+    # then
+    assert isinstance(speed_loc1, dict)  # check if speed_loc1 is a dictionary
+    assert isinstance(direction_loc1, dict)  # check if direction_loc1 is a dictionary
+    assert len(speed_loc1) == 2  # check if speed_loc1 has two keys (10m and 100m)
+    assert len(direction_loc1) == 2  # check if direction_loc1 has two keys (10m and 100m)
+
+def test_interpolate_at_loc():
+    # given
+    height = '10m'
+    component_name = ['u10', 'v10', 'u100', 'v100']
+ 
+    path_resp_file = DATA_DIR
+    winddata1 = final_project.WindData(path_resp_file)
+
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+
+    location2 = np.array([latitudes[0], longitudes[0]])
+    location1 = np.array([latitudes[1], longitudes[0]])
+    location4 = np.array([latitudes[0], longitudes[1]])
+    location3 = np.array([latitudes[1], longitudes[1]])
+
+    speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
+    speed_loc2, direction_loc2 = winddata1.compute_wind_speed_direction(location2, component_name)
+    speed_loc3, direction_loc3 = winddata1.compute_wind_speed_direction(location3, component_name)
+    speed_loc4, direction_loc4 = winddata1.compute_wind_speed_direction(location4, component_name)
+
+    speed_locs = [speed_loc1, speed_loc2, speed_loc3, speed_loc4]
+    direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4]
+
+    loc_lat = latitudes[0]
+    loc_lon = longitudes[0]
+    # when
+    New_speed, New_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, height, loc_lat, loc_lon)
+    # then
+    assert isinstance(New_speed, np.ndarray)  # check if New_speed is a numpy array
+    assert isinstance(New_direction, np.ndarray)  # check if New_direction is a numpy array
+    assert len(New_speed) == len(speed_loc1['10m'])  # check if the length of New_speed matches the length of speed_locs
+    assert len(New_direction) == len(direction_loc1['10m'])  # check if the length of New_direction matches the length of direction_locs
