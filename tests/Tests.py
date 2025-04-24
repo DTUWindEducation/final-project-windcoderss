@@ -81,6 +81,10 @@ def test_compute_wind_speed_direction():
     assert len(direction_loc1) == 2  # check if direction_loc1 has two keys (10m and 100m)
 
 def test_interpolate_at_loc():
+    """
+    Test the interpolation of wind speed and direction at a specific location and height.
+    """
+
     # given
     height = '10m'
     component_name = ['u10', 'v10', 'u100', 'v100']
@@ -113,3 +117,24 @@ def test_interpolate_at_loc():
     assert isinstance(New_direction, np.ndarray)  # check if New_direction is a numpy array
     assert len(New_speed) == len(speed_loc1['10m'])  # check if the length of New_speed matches the length of speed_locs
     assert len(New_direction) == len(direction_loc1['10m'])  # check if the length of New_direction matches the length of direction_locs
+
+def test_windspeed_at_height():
+    """
+    Test the calculation of wind speed at a specific height using given wind data and parameters.
+    """
+    # Given
+    path_resp_file = DATA_DIR
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    winddata1 = final_project.WindData(path_resp_file)
+    alpha = 0.143
+    height_z = 15
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[1], longitudes[0]])
+    speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
+
+    # when
+    wind_speed_height_z_loc1 = final_project.windspeed_at_height(speed_loc1, height_z, alpha)
+    # Then
+    assert len(wind_speed_height_z_loc1) == len(speed_loc1['10m'])  # check if lengths match
+    assert np.all(wind_speed_height_z_loc1 > speed_loc1['10m'])  # check if all values are larger
