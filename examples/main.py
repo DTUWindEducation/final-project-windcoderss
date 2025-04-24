@@ -8,6 +8,8 @@ winddata_file_path = "./inputs/1997-1999.nc"
 loc_lon = 7.9061
 loc_lat = 55.5297
 height = '10m'         # 10m or 100m
+alpha = 0.143           # standard value
+height_z = 56
 
 winddata1 = final_project.WindData(winddata_file_path)
 
@@ -30,7 +32,15 @@ speed_loc4, direction_loc4 = winddata1.compute_wind_speed_direction(location4, c
 speed_locs = [speed_loc1, speed_loc2, speed_loc3, speed_loc4]
 direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4]
 
+# Interpolating wind speed and direction at the specified location (Hornsrev) using the wind data
 Hornsrev_10m_speed, Hornsrev_10m_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, height, loc_lon, loc_lat)
+
+# Using power law to calculate wind speed at height z for all locations
+wind_speed_height_z_loc1 = winddata1.windspeed_at_height(speed_loc1, height_z, alpha)
+wind_speed_height_z_loc2 = winddata1.windspeed_at_height(speed_loc2, height_z, alpha)
+wind_speed_height_z_loc3 = winddata1.windspeed_at_height(speed_loc3, height_z, alpha)
+wind_speed_height_z_loc4 = winddata1.windspeed_at_height(speed_loc4, height_z, alpha)
+
 
 # Extract wind speeds at 10m for all locations
 speed_10m_loc1 = speed_loc1['10m']
