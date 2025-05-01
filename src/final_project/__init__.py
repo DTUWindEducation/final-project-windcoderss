@@ -1,6 +1,8 @@
 """Final project functions"""
 import numpy as np
 from netCDF4 import Dataset
+import matplotlib.pyplot as plt
+from scipy.stats import weibull_min
 
 class WindData:
     def __init__(self, data_file_path):
@@ -133,7 +135,7 @@ class WindData:
         x1, x2 = longitudes[0], longitudes[1]
         y1, y2 = latitudes[1], latitudes[0]
 
-        x, y = loc_lat, loc_lon
+        y, x = loc_lat, loc_lon
 
         # Bilinear interpolation estimates wind at Horns Rev by weighting values from the four surrounding points based on Horns Rev’s position within the grid
         wx1 = (x2 - x) / (x2 - x1)    # closer to lon x1 (west)
@@ -169,3 +171,36 @@ def windspeed_at_height(wind_speed, height, alpha):
         u = wind_speed['10m']*(height/10)**alpha
 
     return u
+
+def fit_and_plot_weibull(wind_speeds):
+    """
+    Fits a Weibull distribution to wind speed data and plots the PDF.
+    
+    Parameters:
+    wind_speeds (array-like): Array of wind speed values [m/s].
+    
+    Returns:
+    shape (float): Weibull shape parameter (k).
+    scale (float): Weibull scale parameter (A).
+    """
+    wind_speeds = np.array(wind_speeds)
+
+    # Fit the Weibull distribution (fix location to 0)
+    shape, loc, scale = weibull_min.fit(wind_speeds, floc=0)
+
+    # Generate x values for plotting
+    x = np.linspace(0, max(wind_speeds) + 2, 100)
+    pdf = weibull_min.pdf(x, shape, loc, scale)
+
+    # Plot
+    plt.figure(figsize=(8, 5))
+    plt.hist(wind_speeds, bins=100, density=True, alpha=0.6, color='skyblue', label='Histogram')
+    plt.plot(x, pdf, 'r-', lw=2, label=f'Weibull PDF\nk={shape:.2f}, A={scale:.2f}')
+    plt.xlabel('Wind Speed [m/s]')
+    plt.ylabel('Probability Density')
+    plt.title('Weibull Distribution Fit to Wind Speed Data')
+    plt.legend()
+    plt.grid(True)
+    plt.show()
+
+    return shape, scale
