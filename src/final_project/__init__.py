@@ -135,7 +135,7 @@ class WindData:
         x1, x2 = longitudes[0], longitudes[1]
         y1, y2 = latitudes[1], latitudes[0]
 
-        x, y = loc_lat, loc_lon
+        y, x = loc_lat, loc_lon
 
         # Bilinear interpolation estimates wind at Horns Rev by weighting values from the four surrounding points based on Horns Rev’s position within the grid
         wx1 = (x2 - x) / (x2 - x1)    # closer to lon x1 (west)

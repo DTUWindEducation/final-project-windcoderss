@@ -17,10 +17,10 @@ winddata1 = final_project.WindData(winddata_file_path)
 latitudes = winddata1.get_latitude()
 longitudes = winddata1.get_longitudes()
 
-location2 = np.array([latitudes[0], longitudes[0]])
-location1 = np.array([latitudes[1], longitudes[0]])
-location4 = np.array([latitudes[0], longitudes[1]])
-location3 = np.array([latitudes[1], longitudes[1]])
+location3 = np.array([latitudes[0], longitudes[0]])
+location4 = np.array([latitudes[1], longitudes[0]])
+location2 = np.array([latitudes[0], longitudes[1]])
+location1 = np.array([latitudes[1], longitudes[1]])
 
 speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
 speed_loc2, direction_loc2 = winddata1.compute_wind_speed_direction(location2, component_name)
@@ -39,7 +39,7 @@ wind_speed_height_z_loc2 = final_project.windspeed_at_height(speed_loc2, height_
 wind_speed_height_z_loc3 = final_project.windspeed_at_height(speed_loc3, height_z, alpha)
 wind_speed_height_z_loc4 = final_project.windspeed_at_height(speed_loc4, height_z, alpha)
 
-Hornsrev_weibull_shape, Hornsrev_weibull_scale = final_project.fit_and_plot_weibull(Hornsrev_10m_speed)
+#Hornsrev_weibull_shape, Hornsrev_weibull_scale = final_project.fit_and_plot_weibull(Hornsrev_10m_speed)
 
 # Extract wind speeds at 10m for all locations
 speed_10m_loc1 = speed_loc1['10m']
