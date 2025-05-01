@@ -3,6 +3,7 @@ import numpy as np
 from netCDF4 import Dataset
 import matplotlib.pyplot as plt
 from scipy.stats import weibull_min
+from windrose import WindroseAxes
 
 class WindData:
     def __init__(self, data_file_path):
@@ -119,8 +120,8 @@ class WindData:
             direction_math_10m = np.rad2deg(np.angle(complex_vector_10m))
             direction_math_100m = np.rad2deg(np.angle(complex_vector_100m))
 
-            direction_10m[i] = (90 - direction_math_10m) % 360
-            direction_100m[i] = (90 - direction_math_100m) % 360
+            direction_10m[i] = (270 - direction_math_10m) % 360
+            direction_100m[i] = (270 - direction_math_100m) % 360
         
         speed['10m'] = speed_10m
         speed['100m'] = speed_100m
@@ -204,3 +205,11 @@ def fit_and_plot_weibull(wind_speeds):
     plt.show()
 
     return shape, scale
+
+def plot_wind_rose(wind_speed, wind_direction):
+    
+    ax = WindroseAxes.from_ax()
+    ax.bar(wind_direction, wind_speed, normed=True, opening=0.8, edgecolor="white")
+    ax.set_legend()
+
+    return
