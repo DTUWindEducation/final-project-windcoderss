@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 winddata_file_path = "./inputs/2006-2008.nc"
+windturbine_file_path = "./inputs/NREL_Reference_5MW_126.csv"
 
 # Coordinates for the location we want to get the speed and direction
 loc_lon = 7.9061
@@ -10,6 +11,7 @@ loc_lat = 55.5297
 height = '10m'         # 10m or 100m
 alpha = 0.143           # standard value
 height_z = 56
+eta = 1
 component_name = ['u10', 'v10', 'u100', 'v100']
 
 winddata1 = final_project.WindData(winddata_file_path)
@@ -42,6 +44,10 @@ wind_speed_height_z_loc4 = final_project.windspeed_at_height(speed_loc4, height_
 Hornsrev_weibull_shape, Hornsrev_weibull_scale = final_project.fit_and_plot_weibull(Hornsrev_10m_speed)
 
 final_project.plot_wind_rose(Hornsrev_10m_speed, Hornsrev_10m_direction)
+
+windturbine1 = final_project.WindTurbine(windturbine_file_path)
+AEP = windturbine1.get_AEP(Hornsrev_weibull_shape, Hornsrev_weibull_scale, eta)
+print(AEP)
 
 # Extract wind speeds at 10m for all locations
 speed_10m_loc1 = speed_loc1['10m']

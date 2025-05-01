@@ -4,7 +4,7 @@ from netCDF4 import Dataset
 import matplotlib.pyplot as plt
 from scipy.stats import weibull_min
 from windrose import WindroseAxes
-
+from scipy.integrate import quad
 class WindData:
     def __init__(self, data_file_path):
         self.data_file_path = data_file_path
@@ -213,3 +213,35 @@ def plot_wind_rose(wind_speed, wind_direction):
     ax.set_legend()
 
     return
+class WindTurbine:
+    def __init__(self, windturbine_file_path):
+        self.windturbine_file_path = windturbine_file_path
+
+    def read_data(self):
+        windturbine_data = np.loadtxt(self.windturbine_file_path, skiprows=1, delimiter=",")
+
+        return windturbine_data
+    
+    def get_power(self, windspeed):
+        windturbine_data = self.read_data()
+        P = np.interp(windspeed, windturbine_data[:, 0], windturbine_data[:, 1])
+
+        return P
+    
+    def get_AEP(self, Weibull_shape, Weibull_scale, eta):
+        windturbine_data = self.read_data()
+        u_in = windturbine_data[1, 0]
+        u_out = windturbine_data[-1, 0]
+        k = Weibull_shape
+        A = Weibull_scale
+        
+        def f(u):
+            return (k/A) *(u/A)**(k-1)*np.exp(-(u/A)**k)
+        
+        def integrand(u):
+            return self.get_power(u) * f(u)
+        
+        integral, _ = quad(integrand, u_in, u_out)
+        
+        AEP = eta * 8760 * integral
+        return AEP
