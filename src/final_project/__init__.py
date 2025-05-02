@@ -245,3 +245,14 @@ class WindTurbine:
         
         AEP = eta * 8760 * integral
         return AEP
+    
+#Extra function no 1
+    def plot_power_output(self, windspeed, hours):
+        power_output = self.get_power(windspeed)
+
+        return
+    
+ #Extra function no 2   
+    def plot_power_duration_curve(self, windspeed):
+
+        return
