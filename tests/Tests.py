@@ -33,8 +33,8 @@ def test_get_latitude():
     rootgrp = winddata1.get_rootgrp()
     # then
     assert isinstance(rootgrp.variables['latitude'][:], np.ndarray)  # check if latitude is a numpy array
-    assert np.any(np.isclose(rootgrp.variables['latitude'][:], 7.75))  # check if any value is close to 7.75
-    assert np.any(np.isclose(rootgrp.variables['latitude'][:], 8.0))   # check if any value is close to 8.0
+    assert np.any(np.isclose(rootgrp.variables['latitude'][:], 55.75))  # check if any value is close to 55.75
+    assert np.any(np.isclose(rootgrp.variables['latitude'][:], 55.5))   # check if any value is close to 55.5
 
 def test_get_longitude():
     """ Check that the output is a np.array"""
@@ -45,8 +45,8 @@ def test_get_longitude():
     rootgrp = winddata1.get_rootgrp()
     # then
     assert len(rootgrp.variables['longitude'][:]) == 2  # check if longitude array has two values
-    assert np.any(np.isclose(rootgrp.variables['longitude'][:], 55.75))  # check if any value is close to 7.75
-    assert np.any(np.isclose(rootgrp.variables['longitude'][:], 55.5))   # check if any value is close to 8.0
+    assert np.any(np.isclose(rootgrp.variables['longitude'][:], 7.75))  # check if any value is close to 7.75
+    assert np.any(np.isclose(rootgrp.variables['longitude'][:], 8))   # check if any value is close to 8.0
 
 def test_get_components_of_wind():
     """Check if wind components is collected in the function"""
@@ -130,7 +130,7 @@ def test_windspeed_at_height():
     height_z = 15
     latitudes = winddata1.get_latitude()
     longitudes = winddata1.get_longitudes()
-    location1 = np.array([latitudes[1], longitudes[0]])
+    location1 = np.array([latitudes[1], longitudes[1]])
     speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
 
     # when
@@ -138,3 +138,43 @@ def test_windspeed_at_height():
     # Then
     assert len(wind_speed_height_z_loc1) == len(speed_loc1['10m'])  # check if lengths match
     assert np.all(wind_speed_height_z_loc1 > speed_loc1['10m'])  # check if all values are larger
+
+def test_fit_and_plot_weibull():
+    """
+    Test the function that fits and plots the weibull distribution
+    """
+    # Given
+    path_resp_file = DATA_DIR
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    winddata1 = final_project.WindData(path_resp_file)
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[1], longitudes[1]])
+    speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
+    wind_speeds = speed_loc1['10m']
+    # when 
+    shape, scale = final_project.fit_and_plot_weibull(wind_speeds)
+    print(shape)
+    # Then
+    assert isinstance(shape, float) # Shape parameter should be a float
+    assert isinstance(scale, float) # Scale parameter should be a float
+    assert shape > 0 # Shape parameter should be positive
+    assert scale > 0 # Scale parameter should be positive
+
+def test_plot_wind_rose():
+    """
+    Test the function that fits and plots the weibull distribution
+    """
+    # Given
+    path_resp_file = DATA_DIR
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    winddata1 = final_project.WindData(path_resp_file)
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[1], longitudes[1]])
+    speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
+    # When / Then
+    try:
+        final_project.plot_wind_rose(speed_loc1['10m'], direction_loc1['10m'])
+    except Exception as e:
+        assert False, f"plot_wind_rose raised an exception: {e}"

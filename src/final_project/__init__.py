@@ -202,7 +202,7 @@ def fit_and_plot_weibull(wind_speeds):
     plt.title('Weibull Distribution Fit to Wind Speed Data')
     plt.legend()
     plt.grid(True)
-    plt.show()
+    plt.show(block=False)
 
     return shape, scale
 

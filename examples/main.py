@@ -88,4 +88,4 @@ axs[1].legend()
 
 # Adjust layout and show the plot
 plt.tight_layout()
-plt.show()
+plt.show(block=False)
