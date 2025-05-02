@@ -59,8 +59,19 @@ class WindData:
         rootgrp.close()
         return longitudes_out
     
+    def get_time(self):
+        """
+        Get the time stamps of the data
+        """
+        rootgrp = self.get_rootgrp()
+        # Extract the timestamps for the hours:
+        time_dim = rootgrp.dimensions['time']
+        num_hours = len(time_dim)
+        hours = np.arange(num_hours)
+        rootgrp.close()
 
-    
+        return hours
+
     def get_components_of_wind(self, component_name):
         """
         Retrieves the wind components from the NetCDF dataset.
@@ -245,3 +256,31 @@ class WindTurbine:
         
         AEP = eta * 8760 * integral
         return AEP
+    
+#Extra function no 1
+    def plot_power_output(self, windspeed, time):
+        power_output = self.get_power(windspeed)
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(time, power_output, label='Power Output')
+        ax.set_xlabel('Time (hours)')
+        ax.set_ylabel('Power Output (kW)')
+        ax.set_title('Power Output of Wind Turbine')
+        ax.legend()
+        ax.grid(True)
+        plt.show(block=False)
+        return
+    
+ #Extra function no 2   
+    def plot_power_duration_curve(self, windspeed, time):
+        power_output = self.get_power(windspeed)
+        # Sort the power output in descending order
+        sorted_power = np.sort(power_output)[::-1]
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(time, sorted_power, label='Power Output Sorted')
+        ax.set_xlabel('Time (hours)')
+        ax.set_ylabel('Power Output (kW)')
+        ax.set_title('Duration Curve for Power Output of Wind Turbine')
+        ax.legend()
+        ax.grid(True)
+        plt.show(block=False)
+        return
