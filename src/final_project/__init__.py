@@ -258,12 +258,29 @@ class WindTurbine:
         return AEP
     
 #Extra function no 1
-    def plot_power_output(self, windspeed, hours):
+    def plot_power_output(self, windspeed, time):
         power_output = self.get_power(windspeed)
-
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(time, power_output, label='Power Output')
+        ax.set_xlabel('Time (hours)')
+        ax.set_ylabel('Power Output (kW)')
+        ax.set_title('Power Output of Wind Turbine')
+        ax.legend()
+        ax.grid(True)
+        plt.show(block=False)
         return
     
  #Extra function no 2   
-    def plot_power_duration_curve(self, windspeed):
-
+    def plot_power_duration_curve(self, windspeed, time):
+        power_output = self.get_power(windspeed)
+        # Sort the power output in descending order
+        sorted_power = np.sort(power_output)[::-1]
+        fig, ax = plt.subplots(figsize=(10, 6))
+        ax.plot(time, sorted_power, label='Power Output Sorted')
+        ax.set_xlabel('Time (hours)')
+        ax.set_ylabel('Power Output (kW)')
+        ax.set_title('Duration Curve for Power Output of Wind Turbine')
+        ax.legend()
+        ax.grid(True)
+        plt.show(block=False)
         return

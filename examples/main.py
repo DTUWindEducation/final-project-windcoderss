@@ -51,6 +51,12 @@ windturbine1 = final_project.WindTurbine(windturbine_file_path)
 AEP = windturbine1.get_AEP(Hornsrev_weibull_shape, Hornsrev_weibull_scale, eta)
 print(AEP)
 
+# Plot power output of the wind turbine
+windturbine1.plot_power_output(Hornsrev_10m_speed, time)
+
+# plot duration curve of power output
+windturbine1.plot_power_duration_curve(Hornsrev_10m_speed, time)
+
 # Extract wind speeds at 10m for all locations
 speed_10m_loc1 = speed_loc1['10m']
 speed_10m_loc2 = speed_loc2['10m']
@@ -89,4 +95,4 @@ axs[1].legend()
 
 # Adjust layout and show the plot
 plt.tight_layout()
-plt.show(block=False)
+plt.show(block=True)
