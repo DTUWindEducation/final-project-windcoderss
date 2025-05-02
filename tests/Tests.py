@@ -154,3 +154,26 @@ def test_fit_and_plot_weibull():
     wind_speeds = speed_loc1
     # when 
     shape, scale = final_project.fit_and_plot_weibull(wind_speeds)
+    # Then
+    assert isinstance(shape, float), "Shape parameter should be a float"
+    assert isinstance(scale, float), "Scale parameter should be a float"
+    assert shape > 0, "Shape parameter should be positive"
+    assert scale > 0, "Scale parameter should be positive"
+
+def test_plot_wind_rose():
+    """
+    Test the function that fits and plots the weibull distribution
+    """
+    # Given
+    path_resp_file = DATA_DIR
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    winddata1 = final_project.WindData(path_resp_file)
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[1], longitudes[0]])
+    speed_loc1, direction_loc1 = winddata1.compute_wind_speed_direction(location1, component_name)
+    # When / Then
+    try:
+        final_project.plot_wind_rose(speed_loc1, direction_loc1)
+    except Exception as e:
+        assert False, f"plot_wind_rose raised an exception: {e}"
