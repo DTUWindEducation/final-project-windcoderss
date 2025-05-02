@@ -48,6 +48,15 @@ def test_get_longitude():
     assert np.any(np.isclose(rootgrp.variables['longitude'][:], 7.75))  # check if any value is close to 7.75
     assert np.any(np.isclose(rootgrp.variables['longitude'][:], 8))   # check if any value is close to 8.0
 
+def test_get_time():
+    """Check that the function get time works"""
+    # given
+    path_resp_file = DATA_DIR
+    winddata1 = final_project.WindData(path_resp_file)
+    # when
+    time = winddata1.get_time()
+    assert isinstance(time, np.ndarray)
+
 def test_get_components_of_wind():
     """Check if wind components is collected in the function"""
     # given

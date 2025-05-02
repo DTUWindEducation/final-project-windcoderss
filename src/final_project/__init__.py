@@ -59,8 +59,19 @@ class WindData:
         rootgrp.close()
         return longitudes_out
     
+    def get_time(self):
+        """
+        Get the time stamps of the data
+        """
+        rootgrp = self.get_rootgrp()
+        # Extract the timestamps for the hours:
+        time_dim = rootgrp.dimensions['time']
+        num_hours = len(time_dim)
+        hours = np.arange(num_hours)
+        rootgrp.close()
 
-    
+        return hours
+
     def get_components_of_wind(self, component_name):
         """
         Retrieves the wind components from the NetCDF dataset.
