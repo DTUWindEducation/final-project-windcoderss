@@ -4,6 +4,7 @@ Check that the functions and classes are working as intended
 import final_project
 import numpy as np
 DATA_DIR = "./inputs/1997-1999.nc"
+WINDTURBINE_DIR = "./inputs/NREL_Reference_5MW_126.csv"
 
 def test_WindData_class():
     """Check if class points at the desired input file"""
@@ -187,3 +188,46 @@ def test_plot_wind_rose():
         final_project.plot_wind_rose(speed_loc1['10m'], direction_loc1['10m'])
     except Exception as e:
         assert False, f"plot_wind_rose raised an exception: {e}"
+
+def test_plot_power_output():
+    """
+    Test the function that plots the power output of the wind turbine
+    """
+    # Given
+    path_resp_file = DATA_DIR
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    winddata1 = final_project.WindData(path_resp_file)
+    path_windturbine_file = WINDTURBINE_DIR
+    wind_turbine = final_project.WindTurbine(path_windturbine_file)
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[1], longitudes[1]])
+    speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
+    time = winddata1.get_time()
+    # When / Then
+    try:
+        wind_turbine.plot_power_output(speed_loc1['10m'], time)
+    except Exception as e:
+        assert False, f"plot_power_output raised an exception: {e}"
+    
+    
+def test_plot_power_duration_curve():
+    """
+    Test the function that plots the power output of the wind turbine
+    """
+    # Given
+    path_resp_file = DATA_DIR
+    component_name = ['u10', 'v10', 'u100', 'v100']
+    winddata1 = final_project.WindData(path_resp_file)
+    path_windturbine_file = WINDTURBINE_DIR
+    wind_turbine = final_project.WindTurbine(path_windturbine_file)
+    latitudes = winddata1.get_latitude()
+    longitudes = winddata1.get_longitudes()
+    location1 = np.array([latitudes[1], longitudes[1]])
+    speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
+    time = winddata1.get_time()
+    # When / Then
+    try:
+        wind_turbine.plot_power_duration_curve(speed_loc1['10m'], time)
+    except Exception as e:
+        assert False, f"plot_power_duration_curve raised an exception: {e}"
