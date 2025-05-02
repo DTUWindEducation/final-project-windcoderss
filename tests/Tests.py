@@ -115,13 +115,13 @@ def test_interpolate_at_loc():
     speed_loc3, direction_loc3 = winddata1.compute_wind_speed_direction(location3, component_name)
     speed_loc4, direction_loc4 = winddata1.compute_wind_speed_direction(location4, component_name)
 
-    speed_locs = [speed_loc1, speed_loc2, speed_loc3, speed_loc4]
-    direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4]
+    speed_locs = [speed_loc1[height], speed_loc2[height], speed_loc3[height], speed_loc4[height]]
+    direction_locs = [direction_loc1[height], direction_loc2[height], direction_loc3[height], direction_loc4[height]]
 
     loc_lat = latitudes[0]
     loc_lon = longitudes[0]
     # when
-    New_speed, New_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, height, loc_lat, loc_lon)
+    New_speed, New_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, loc_lat, loc_lon)
     # then
     assert isinstance(New_speed, np.ndarray)  # check if New_speed is a numpy array
     assert isinstance(New_direction, np.ndarray)  # check if New_direction is a numpy array

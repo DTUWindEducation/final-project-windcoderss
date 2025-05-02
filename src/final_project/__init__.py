@@ -140,7 +140,7 @@ class WindData:
         direction['100m'] = direction_100m
         return speed, direction
 
-    def interpolate_at_loc(self, speed_locs, direction_locs, height, loc_lon, loc_lat):
+    def interpolate_at_loc(self, speed_locs, direction_locs, loc_lon, loc_lat):
         latitudes = self.get_latitude()    #Extract latitudes from the NetCDF file
         longitudes = self.get_longitudes() #Extract longitudes from the NetCDF file
        
@@ -156,17 +156,17 @@ class WindData:
         wy2 = (y - y1) / (y2 - y1)    # closer to lat y2 (north)
 
         interpolated_speed = (
-        speed_locs[0][height] * wx1 * wy1 +  # L4
-        speed_locs[1][height] * wx2 * wy1 +  # L1
-        speed_locs[2][height] * wx1 * wy2 +  # L3
-        speed_locs[3][height] * wx2 * wy2    # L2
+        speed_locs[0] * wx1 * wy1 +  # L4
+        speed_locs[1] * wx2 * wy1 +  # L1
+        speed_locs[2] * wx1 * wy2 +  # L3
+        speed_locs[3] * wx2 * wy2    # L2
          )
 
         interpolated_direction = (
-        direction_locs[0][height] * wx1 * wy1 +
-        direction_locs[1][height] * wx2 * wy1 +
-        direction_locs[2][height] * wx1 * wy2 +
-        direction_locs[3][height] * wx2 * wy2
+        direction_locs[0] * wx1 * wy1 +
+        direction_locs[1] * wx2 * wy1 +
+        direction_locs[2] * wx1 * wy2 +
+        direction_locs[3] * wx2 * wy2
          )
 
         return interpolated_speed, interpolated_direction
