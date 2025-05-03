@@ -58,9 +58,16 @@ The package consist of two main classes and a few standalone helper functions.
     Handles wind turbine power data, including:
     * Reading turbine performance curves from .csv file
     * Interpolating power output for any wind speed
-    * Computing AEP (Annual Energy Production)
-    * Plotting power duration curves (Extra functions)
+    * Computing AEP for selected year (Annual Energy Production)
+    * Plotting power duration curve for selected year (Extra functions)
     * Compairing AEP over years (Extra functions)
+
+3. Standalone funcitons: <br />
+    * `combine_wind_data`: Aggregates speed and directions across multiple NetCDF files
+    * `combine_time`: Aggregates time across NetCDF files
+    * `windspeed_at_height`: Adjust wind speed using the power law
+    * `fit_and_plot_weibull`: Fits a Weibull distribution for wind analysis for the selected year
+    * `plot_wind_rose`: Plots the wind rose based on all the provided wind data
 
 ## Peer review
 
