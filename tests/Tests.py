@@ -56,7 +56,7 @@ def test_get_time():
     winddata1 = final_project.WindData(path_resp_file)
     # when
     time = winddata1.get_time()
-    assert isinstance(time, np.ndarray)
+    assert isinstance(time, np.ndarray) # check if time is a numpy array
 
 def test_get_components_of_wind():
     """Check if wind components is collected in the function"""
@@ -187,7 +187,7 @@ def test_plot_wind_rose():
     try:
         final_project.plot_wind_rose(speed_loc1['10m'], direction_loc1['10m'])
     except Exception as e:
-        assert False, f"plot_wind_rose raised an exception: {e}"
+        assert False, f"plot_wind_rose raised an exception: {e}" # check if the function raises an exception
 
 def test_plot_power_output():
     """
@@ -208,12 +208,12 @@ def test_plot_power_output():
     try:
         wind_turbine.plot_power_output(speed_loc1['10m'], time)
     except Exception as e:
-        assert False, f"plot_power_output raised an exception: {e}"
+        assert False, f"plot_power_output raised an exception: {e}" # check if the function raises an exception
     
     
 def test_plot_power_duration_curve():
     """
-    Test the function that plots the power output of the wind turbine
+    Test the function that plots the power duration curve of the wind turbine
     """
     # Given
     path_resp_file = DATA_DIR
@@ -230,4 +230,4 @@ def test_plot_power_duration_curve():
     try:
         wind_turbine.plot_power_duration_curve(speed_loc1['10m'], time)
     except Exception as e:
-        assert False, f"plot_power_duration_curve raised an exception: {e}"
+        assert False, f"plot_power_duration_curve raised an exception: {e}" # check if the function raises an exception

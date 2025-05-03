@@ -31,16 +31,18 @@ location4 = np.array([latitudes[1], longitudes[0]])
 nc_files = ['./inputs/' + f for f in os.listdir('./inputs/') if f.endswith('.nc')]
 
 # Get the speed and direction of the wind components for all locations
+print("Combining wind data for all locations")
 speed_loc1, direction_loc1 = final_project.combine_wind_data(nc_files, location1, component_name)
 speed_loc2, direction_loc2 = final_project.combine_wind_data(nc_files, location2, component_name)
 speed_loc3, direction_loc3 = final_project.combine_wind_data(nc_files, location3, component_name)
 speed_loc4, direction_loc4 = final_project.combine_wind_data(nc_files, location4, component_name)
 
 # Get the time vector from the NetCDF4 files
+print("Combining time data")
 time, years = final_project.combine_time(nc_files)
 
-
 # Using power law to calculate wind speed at height z for all locations
+print("Calculating wind speed at height z")
 wind_speed_height_z_loc1 = final_project.windspeed_at_height(speed_loc1, height_z, alpha)
 wind_speed_height_z_loc2 = final_project.windspeed_at_height(speed_loc2, height_z, alpha)
 wind_speed_height_z_loc3 = final_project.windspeed_at_height(speed_loc3, height_z, alpha)
@@ -51,64 +53,30 @@ speed_locs = [wind_speed_height_z_loc1, wind_speed_height_z_loc2, wind_speed_hei
 direction_locs = [direction_loc1['100m'], direction_loc2['100m'], direction_loc3['100m'], direction_loc4['100m']]
 
 # Interpolating wind speed and direction at the specified location (Hornsrev) using the wind data
+print("Interpolating wind speed and direction at the specified location")
 Hornsrev_speed, Hornsrev_direction = winddata.interpolate_at_loc(speed_locs, direction_locs, loc_lon, loc_lat)
 
 # Fit and plot the weibull distribution for wind speed at the selected location and height
+print("Fitting and plot Weibull distribution")
 Hornsrev_weibull_shape, Hornsrev_weibull_scale = final_project.fit_and_plot_weibull(Hornsrev_speed, years, selected_year, plot)
 
-# Plot a wind rose diagram for the selected location and height
+# Plot a wind rose diagram for the selected location and height for all years
+print("Plotting wind rose diagram")
 final_project.plot_wind_rose(Hornsrev_speed, Hornsrev_direction)
 
 # Define the windturbine object
 windturbine = final_project.WindTurbine(windturbine_file_path)
 
 # Compute AEP for the selected windturbine at the selected location and height
+print("Calculating AEP")
 AEP = windturbine.get_AEP(Hornsrev_weibull_shape, Hornsrev_weibull_scale, eta)
-
-print(AEP)
+print(f"The Annual Energy Production (AEP) for the year {selected_year} is {AEP:.2f} kWh.")
 
 # Plot power output of the wind turbine
+print("Compareing AEP for all years")
 windturbine.compare_AEP(Hornsrev_speed, eta, years, all_years)
 
 # plot duration curve of power output
+print("Plotting power duration curve for the selected year")
 windturbine.plot_power_duration_curve(Hornsrev_speed, time, years, selected_year)
 
-# Extract wind speeds at 10m for all locations
-speed_10m_loc1 = speed_loc1['10m']
-speed_10m_loc2 = speed_loc2['10m']
-speed_10m_loc3 = speed_loc3['10m']
-speed_10m_loc4 = speed_loc4['10m']
-
-# Extract wind directions at 10m for all locations
-direction_10m_loc1 = direction_loc1['10m']
-direction_10m_loc2 = direction_loc2['10m']
-direction_10m_loc3 = direction_loc3['10m']
-direction_10m_loc4 = direction_loc4['10m']
-
-# Create a figure with two subplots
-fig, axs = plt.subplots(2, 1, figsize=(10, 12))
-# Plot wind speed at 10m for all locations and Hornsrev interpolated speed
-axs[0].plot(time, speed_10m_loc1, label='Loc1 10m Wind Speed')
-axs[0].plot(time, speed_10m_loc2, label='Loc2 10m Wind Speed')
-axs[0].plot(time, speed_10m_loc3, label='Loc3 10m Wind Speed')
-axs[0].plot(time, speed_10m_loc4, label='Loc4 10m Wind Speed')
-axs[0].plot(time, Hornsrev_speed, label='Hornsrev 10m Wind Speed', linestyle='--')
-axs[0].set_xlabel('Time (hours)')
-axs[0].set_ylabel('Wind Speed (m/s)')
-axs[0].set_title('Wind Speed at 10m for All Locations and Hornsrev')
-axs[0].legend()
-
-# Plot wind direction at 10m for all locations and Hornsrev interpolated direction
-axs[1].plot(time, direction_10m_loc1, label='Loc1 10m Wind Direction')
-axs[1].plot(time, direction_10m_loc2, label='Loc2 10m Wind Direction')
-axs[1].plot(time, direction_10m_loc3, label='Loc3 10m Wind Direction')
-axs[1].plot(time, direction_10m_loc4, label='Loc4 10m Wind Direction')
-axs[1].plot(time, Hornsrev_direction, label='Hornsrev 10m Wind Direction', linestyle='--')
-axs[1].set_xlabel('Time (hours)')
-axs[1].set_ylabel('Wind Direction (degrees)')
-axs[1].set_title('Wind Direction at 10m for All Locations and Hornsrev')
-axs[1].legend()
-
-# Adjust layout and show the plot
-plt.tight_layout()
-plt.show(block=True)

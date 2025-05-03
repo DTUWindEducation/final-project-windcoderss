@@ -17,7 +17,7 @@ class WindData:
             netCDF4.Dataset: The root group of the NetCDF file opened in read mode.
         """
         
-        rootgrp = Dataset(self.data_file_path, "r", format="NETCDF4")
+        rootgrp = Dataset(self.data_file_path, "r", format="NETCDF4") # Open the NetCDF file in read mode
         return rootgrp
     
     def get_latitude(self):
@@ -26,12 +26,10 @@ class WindData:
         Returns:
             numpy.ndarray: An array containing the latitude values.
         """
-        
-
         rootgrp = self.get_rootgrp()
-        latitudes = rootgrp.variables['latitude']
-        latitudes_out = np.zeros(len(latitudes))
-        for i in range(len(latitudes)):
+        latitudes = rootgrp.variables['latitude'] # Extract the latitude variable from the NetCDF file
+        latitudes_out = np.zeros(len(latitudes)) # Initialize an array to store the latitude values
+        for i in range(len(latitudes)): # Loop through the latitude values
             latitudes_out[i] = latitudes[i]
 
         rootgrp.close()
@@ -43,12 +41,10 @@ class WindData:
         Returns:
             numpy.ndarray: An array of longitude values extracted from the dataset.
         """
-        
-
         rootgrp = self.get_rootgrp()
-        longitudes = rootgrp.variables['longitude']
-        longitudes_out = np.zeros(len(longitudes))
-        for i in range(len(longitudes)):
+        longitudes = rootgrp.variables['longitude'] # Extract the longitude variable from the NetCDF file
+        longitudes_out = np.zeros(len(longitudes)) # Initialize an array to store the longitude values
+        for i in range(len(longitudes)): # Loop through the longitude values
             longitudes_out[i] = longitudes[i]
         rootgrp.close()
         return longitudes_out
@@ -64,14 +60,14 @@ class WindData:
         
         rootgrp = self.get_rootgrp()
         # Extract the timestamps for the hours:
-        time_dim = rootgrp.dimensions['time']
+        time_dim = rootgrp.dimensions['time'] 
         num_hours = len(time_dim)
         hours = np.arange(num_hours)
-        # Extract the hours
+        # Extract the years
         time_var = rootgrp.variables['time']
         dates = num2date(time_var[:], units=time_var.units, calendar=getattr(time_var, 'calendar', 'standard'))
         years = [date.year for date in dates]
-        years = np.array(years)
+        years = np.array(years) # Convert the list of years to a NumPy array
         # Close the rootgrp
         rootgrp.close()
 
@@ -123,7 +119,7 @@ class WindData:
         """
         
         wind_data = self.get_components_of_wind(component_name)
-        location_index = np.where((wind_data['locations'] == location).all(axis=1))[0][0]
+        location_index = np.where((wind_data['locations'] == location).all(axis=1))[0][0] # Find the index of the location in the wind data
 
         speed = {}
         direction = {}
@@ -131,23 +127,23 @@ class WindData:
         speed_100m = np.zeros(len(wind_data['u100'][0]))
         direction_10m = np.zeros(len(wind_data['u10'][0]))
         direction_100m = np.zeros(len(wind_data['u100'][0]))
-        for i in range(len(wind_data[component_name[0]][0])):
+        for i in range(len(wind_data[component_name[0]][0])): # Loop through each time step
             x_value_10m = wind_data['u10'][location_index][i]
             y_value_10m = wind_data['v10'][location_index][i]
             x_value_100m = wind_data['u100'][location_index][i]
             y_value_100m = wind_data['v100'][location_index][i]
 
-            complex_vector_10m = x_value_10m + y_value_10m*1j
-            complex_vector_100m = x_value_100m + y_value_100m*1j
+            complex_vector_10m = x_value_10m + y_value_10m*1j # Create a complex vector for 10m wind data
+            complex_vector_100m = x_value_100m + y_value_100m*1j # Create a complex vector for 100m wind data
 
-            speed_10m[i] = np.abs(complex_vector_10m)
-            speed_100m[i] = np.abs(complex_vector_100m)
+            speed_10m[i] = np.abs(complex_vector_10m) # Calculate the speed at 10m
+            speed_100m[i] = np.abs(complex_vector_100m) # Calculate the speed at 100m
 
-            direction_math_10m = np.rad2deg(np.angle(complex_vector_10m))
-            direction_math_100m = np.rad2deg(np.angle(complex_vector_100m))
+            direction_math_10m = np.rad2deg(np.angle(complex_vector_10m)) # Calculate the direction at 10m
+            direction_math_100m = np.rad2deg(np.angle(complex_vector_100m)) # Calculate the direction at 100m
 
-            direction_10m[i] = (270 - direction_math_10m) % 360
-            direction_100m[i] = (270 - direction_math_100m) % 360
+            direction_10m[i] = (270 - direction_math_10m) % 360 # Convert to meteorological convention
+            direction_100m[i] = (270 - direction_math_100m) % 360 # Convert to meteorological convention
         
         speed['10m'] = speed_10m
         speed['100m'] = speed_100m
@@ -170,10 +166,10 @@ class WindData:
         latitudes = self.get_latitude()    #Extract latitudes from the NetCDF file
         longitudes = self.get_longitudes() #Extract longitudes from the NetCDF file
        
-        x1, x2 = longitudes[0], longitudes[1]
+        x1, x2 = longitudes[0], longitudes[1] 
         y1, y2 = latitudes[1], latitudes[0]
 
-        y, x = loc_lat, loc_lon
+        y, x = loc_lat, loc_lon # Coordinates of chosen location fx. Horns Rev
 
         # Bilinear interpolation estimates wind at Horns Rev by weighting values from the four surrounding points based on Horns Rev’s position within the grid
         wx1 = (x2 - x) / (x2 - x1)    # closer to lon x1 (west)
@@ -199,7 +195,7 @@ class WindData:
     
 class WindTurbine:
     def __init__(self, windturbine_file_path):
-        self.windturbine_file_path = windturbine_file_path
+        self.windturbine_file_path = windturbine_file_path # Path to the wind turbine data file
 
     def read_data(self):
         """
@@ -208,7 +204,7 @@ class WindTurbine:
             numpy.ndarray: A 2D array containing the wind turbine data loaded from the file.
         """
 
-        windturbine_data = np.loadtxt(self.windturbine_file_path, skiprows=1, delimiter=",")
+        windturbine_data = np.loadtxt(self.windturbine_file_path, skiprows=1, delimiter=",") # Load the wind turbine data from the CSV file
 
         return windturbine_data
     
@@ -222,7 +218,7 @@ class WindTurbine:
         """
 
         windturbine_data = self.read_data()
-        P = np.interp(windspeed, windturbine_data[:, 0], windturbine_data[:, 1])
+        P = np.interp(windspeed, windturbine_data[:, 0], windturbine_data[:, 1]) # Interpolate the power output based on the wind speed
 
         return P
     
@@ -238,20 +234,20 @@ class WindTurbine:
         """
 
         windturbine_data = self.read_data()
-        u_in = windturbine_data[1, 0]
-        u_out = windturbine_data[-1, 0]
-        k = Weibull_shape
-        A = Weibull_scale
+        u_in = windturbine_data[1, 0] # Minimum wind speed for power generation
+        u_out = windturbine_data[-1, 0] # Maximum wind speed for power generation
+        k = Weibull_shape # Weibull shape parameter for the selected year
+        A = Weibull_scale # Weibull scale parameter for the selected year
         
         def f(u):
-            return (k/A) *(u/A)**(k-1)*np.exp(-(u/A)**k)
+            return (k/A) *(u/A)**(k-1)*np.exp(-(u/A)**k) # Weibull probability density function
         
         def integrand(u):
-            return self.get_power(u) * f(u)
+            return self.get_power(u) * f(u) # Integrand function for AEP calculation
         
-        integral, _ = quad(integrand, u_in, u_out)
+        integral, _ = quad(integrand, u_in, u_out, limit=200, epsabs=1e-5, epsrel=1e-5) # Perform numerical integration to calculate AEP
         
-        AEP = eta * 8760 * integral
+        AEP = eta * 8760 * integral # Calculate AEP in kWh (assuming 8760 hours in a year)
         return AEP
     
 #Extra function no 1
@@ -267,8 +263,8 @@ class WindTurbine:
             None: Displays a plot of AEP (in MWh) for the given years.
         """
 
-        AEP_all = []
-        for i in range(len(all_years)):
+        AEP_all = [] # List to store AEP values for each year
+        for i in range(len(all_years)): # Loop through each year in all_years
             weibull_shape, weibull_scale = fit_and_plot_weibull(windspeed, years, all_years[i], False)
             AEP = self.get_AEP(weibull_shape, weibull_scale, eta)
             AEP_all.append(AEP)
@@ -315,7 +311,7 @@ class WindTurbine:
         ax.set_title('Duration Curve for Power Output of Wind Turbine in year ' + str(selected_year))
         ax.legend()
         ax.grid(True)
-        plt.show(block=False)
+        plt.show(block=True)
         return
     
 # Functions that is not part of any classes
@@ -437,7 +433,8 @@ def plot_wind_rose(wind_speed, wind_direction):
     
     ax = WindroseAxes.from_ax()
     ax.bar(wind_direction, wind_speed, normed=True, opening=0.8, edgecolor="white")
+    ax.set_title("Wind Rose Diagram showing wind speed and direction for all years")
     ax.set_legend()
-
+    plt.show(block=False)
     return
 
