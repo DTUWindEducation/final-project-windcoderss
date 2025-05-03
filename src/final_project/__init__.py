@@ -283,7 +283,7 @@ class WindTurbine:
                       windturbine_data[:, 1])
         return P
 
-    def get_AEP(self, Weibull_shape, Weibull_scale, eta):
+    def compute_AEP(self, Weibull_shape, Weibull_scale, eta):
         """
         Calculate the Annual Energy Production (AEP) of a wind turbine.
         Parameters:
@@ -341,7 +341,7 @@ class WindTurbine:
                                                                 all_years[i],
                                                                 False)
             # Calculate AEP for the selected year
-            AEP = self.get_AEP(weibull_shape, weibull_scale, eta)
+            AEP = self.compute_AEP(weibull_shape, weibull_scale, eta)
             AEP_all.append(AEP)  # Append the AEP value to the list
         AEP_all = np.array(AEP_all)  # Convert the list to a NumPy array
         fig, ax = plt.subplots(figsize=(10, 6))  # Create a figure

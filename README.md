@@ -62,7 +62,7 @@ The package consist of two main classes and a few standalone helper functions.
     * Plotting power duration curve for selected year (Extra functions)
     * Compairing AEP over years (Extra functions)
 
-3. Standalone funcitons: <br />
+3. Standalone functions: <br />
     * `combine_wind_data`: Aggregates speed and directions across multiple NetCDF files
     * `combine_time`: Aggregates time across NetCDF files
     * `windspeed_at_height`: Adjust wind speed using the power law

@@ -98,7 +98,7 @@ windturbine = final_project.WindTurbine(windturbine_file_path)
 
 # Compute AEP for the selected windturbine at the selected location and height
 print("Calculating AEP")
-AEP = windturbine.get_AEP(Hornsrev_weibull_shape, Hornsrev_weibull_scale, eta)
+AEP = windturbine.compute_AEP(Hornsrev_weibull_shape, Hornsrev_weibull_scale, eta)
 print(f"The Annual Energy Production (AEP) for the year {selected_year} is {AEP:.2f} kWh.")
 
 # Plot power output of the wind turbine
