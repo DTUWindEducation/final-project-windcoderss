@@ -197,7 +197,7 @@ def test_plot_wind_rose():
 
 def test_compare_AEP():
     """
-    Test the function that plots the power output of the wind turbine
+    Test the function that compares the AEP
     """
     # Given
     nc_files = ['./inputs/' + f for f in os.listdir('./inputs/') if
