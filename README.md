@@ -69,6 +69,9 @@ The package consist of two main classes and a few standalone helper functions.
     * `fit_and_plot_weibull`: Fits a Weibull distribution for wind analysis for the selected year
     * `plot_wind_rose`: Plots the wind rose based on all the provided wind data
 
+Diagram of the package: <br />
+    ![alt text](diagram.png)
+
 ## Peer review
 
 [ADD TEXT HERE!]
