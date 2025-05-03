@@ -21,9 +21,10 @@ FINAL-PROJECT-WINDCODERSS<br />
 ├── examples/<br />
 │   └── main.py<br />
 ├── .gitignore<br />
+├── diagram.png<br />
 ├── LICENSE<br />
-├── README.md<br />
-└── pyproject.toml<br />
+├── pyproject.toml<br />
+└── README.md<br />
 
 
 ## Quick-start guide
