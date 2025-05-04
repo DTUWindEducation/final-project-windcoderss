@@ -3,6 +3,8 @@ Check that the functions and classes are working as intended
 """
 import final_project
 import numpy as np
+import os
+
 DATA_DIR = "./inputs/1997-1999.nc"
 WINDTURBINE_DIR = "./inputs/NREL_Reference_5MW_126.csv"
 
@@ -55,8 +57,9 @@ def test_get_time():
     path_resp_file = DATA_DIR
     winddata1 = final_project.WindData(path_resp_file)
     # when
-    time = winddata1.get_time()
-    assert isinstance(time, np.ndarray)
+    hours, years = winddata1.get_time()
+    assert isinstance(hours, np.ndarray) # check if time is a numpy array
+    assert isinstance(years, np.ndarray) # check if time is a numpy array
 
 def test_get_components_of_wind():
     """Check if wind components is collected in the function"""
@@ -115,13 +118,13 @@ def test_interpolate_at_loc():
     speed_loc3, direction_loc3 = winddata1.compute_wind_speed_direction(location3, component_name)
     speed_loc4, direction_loc4 = winddata1.compute_wind_speed_direction(location4, component_name)
 
-    speed_locs = [speed_loc1, speed_loc2, speed_loc3, speed_loc4]
-    direction_locs = [direction_loc1, direction_loc2, direction_loc3, direction_loc4]
+    speed_locs = [speed_loc1[height], speed_loc2[height], speed_loc3[height], speed_loc4[height]]
+    direction_locs = [direction_loc1[height], direction_loc2[height], direction_loc3[height], direction_loc4[height]]
 
     loc_lat = latitudes[0]
     loc_lon = longitudes[0]
     # when
-    New_speed, New_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, height, loc_lat, loc_lon)
+    New_speed, New_direction = winddata1.interpolate_at_loc(speed_locs, direction_locs, loc_lat, loc_lon)
     # then
     assert isinstance(New_speed, np.ndarray)  # check if New_speed is a numpy array
     assert isinstance(New_direction, np.ndarray)  # check if New_direction is a numpy array
@@ -156,14 +159,17 @@ def test_fit_and_plot_weibull():
     # Given
     path_resp_file = DATA_DIR
     component_name = ['u10', 'v10', 'u100', 'v100']
+    plot = False
+    selected_year = 1999
     winddata1 = final_project.WindData(path_resp_file)
+    _, years = winddata1.get_time()
     latitudes = winddata1.get_latitude()
     longitudes = winddata1.get_longitudes()
     location1 = np.array([latitudes[1], longitudes[1]])
     speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
     wind_speeds = speed_loc1['10m']
     # when 
-    shape, scale = final_project.fit_and_plot_weibull(wind_speeds)
+    shape, scale = final_project.fit_and_plot_weibull(wind_speeds, years, selected_year, plot)
     print(shape)
     # Then
     assert isinstance(shape, float) # Shape parameter should be a float
@@ -187,14 +193,18 @@ def test_plot_wind_rose():
     try:
         final_project.plot_wind_rose(speed_loc1['10m'], direction_loc1['10m'])
     except Exception as e:
-        assert False, f"plot_wind_rose raised an exception: {e}"
+        assert False, f"plot_wind_rose raised an exception: {e}" # check if the function raises an exception
 
-def test_plot_power_output():
+def test_compare_AEP():
     """
-    Test the function that plots the power output of the wind turbine
+    Test the function that compares the AEP
     """
     # Given
+    nc_files = ['./inputs/' + f for f in os.listdir('./inputs/') if
+            f.endswith('.nc')]
     path_resp_file = DATA_DIR
+    all_years = [1997, 1998, 1999, 2000, 2001, 2002, 
+             2003, 2004, 2005, 2006, 2007, 2008]
     component_name = ['u10', 'v10', 'u100', 'v100']
     winddata1 = final_project.WindData(path_resp_file)
     path_windturbine_file = WINDTURBINE_DIR
@@ -202,21 +212,26 @@ def test_plot_power_output():
     latitudes = winddata1.get_latitude()
     longitudes = winddata1.get_longitudes()
     location1 = np.array([latitudes[1], longitudes[1]])
-    speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
-    time = winddata1.get_time()
+    speed_loc1, direction_loc1 = final_project.combine_wind_data(
+    nc_files, location1, component_name)
+    eta = 1
+    time, years = final_project.combine_time(nc_files)
     # When / Then
     try:
-        wind_turbine.plot_power_output(speed_loc1['10m'], time)
+        wind_turbine.compare_AEP(np.array(speed_loc1['10m']), eta, years, all_years)
     except Exception as e:
-        assert False, f"plot_power_output raised an exception: {e}"
+        assert False, f"plot_power_output raised an exception: {e}" # check if the function raises an exception
     
     
 def test_plot_power_duration_curve():
     """
-    Test the function that plots the power output of the wind turbine
+    Test the function that plots the power duration curve of the wind turbine
     """
     # Given
+    nc_files = ['./inputs/' + f for f in os.listdir('./inputs/') if
+            f.endswith('.nc')]
     path_resp_file = DATA_DIR
+    selected_year = 1999
     component_name = ['u10', 'v10', 'u100', 'v100']
     winddata1 = final_project.WindData(path_resp_file)
     path_windturbine_file = WINDTURBINE_DIR
@@ -225,9 +240,9 @@ def test_plot_power_duration_curve():
     longitudes = winddata1.get_longitudes()
     location1 = np.array([latitudes[1], longitudes[1]])
     speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
-    time = winddata1.get_time()
+    time, years = final_project.combine_time(nc_files)
     # When / Then
     try:
-        wind_turbine.plot_power_duration_curve(speed_loc1['10m'], time)
+        wind_turbine.plot_power_duration_curve(speed_loc1['10m'], time, years, selected_year)
     except Exception as e:
-        assert False, f"plot_power_duration_curve raised an exception: {e}"
+        assert False, f"plot_power_duration_curve raised an exception: {e}" # check if the function raises an exception
