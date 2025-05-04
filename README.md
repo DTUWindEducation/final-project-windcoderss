@@ -1,7 +1,7 @@
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/zjSXGKeR)
-# Our Great Package
-
-Team: Windcoderss
+# Our Great Package<br />
+Team: Windcoderss<br />
+This Python package is designed to support wind resource assessment at a specified site using ERA5 reanalysis data. It enables users to process and analyze multi-year hourly wind data at different heights (e.g., 10 m and 100 m) to estimate key wind energy metrics such as wind speed distributions, wind roses, and annual energy production (AEP) for selected turbines.
 
 ## Overview
 The structure of our final project are as follows:<br />
