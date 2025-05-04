@@ -75,4 +75,6 @@ Diagram of the package: <br />
 
 ## Peer review
 
-[ADD TEXT HERE!]
+This package have been developed working together and taking turns writing the code. <br />
+The different functionalities have been developed one at a time and was tested during the development. <br />
+The main.py script which shows the functionalites was finished in the end by both team members.
