@@ -228,7 +228,10 @@ def test_plot_power_duration_curve():
     Test the function that plots the power duration curve of the wind turbine
     """
     # Given
+    nc_files = ['./inputs/' + f for f in os.listdir('./inputs/') if
+            f.endswith('.nc')]
     path_resp_file = DATA_DIR
+    selected_year = 1999
     component_name = ['u10', 'v10', 'u100', 'v100']
     winddata1 = final_project.WindData(path_resp_file)
     path_windturbine_file = WINDTURBINE_DIR
@@ -237,9 +240,9 @@ def test_plot_power_duration_curve():
     longitudes = winddata1.get_longitudes()
     location1 = np.array([latitudes[1], longitudes[1]])
     speed_loc1, _ = winddata1.compute_wind_speed_direction(location1, component_name)
-    time = winddata1.get_time()
+    time, years = final_project.combine_time(nc_files)
     # When / Then
     try:
-        wind_turbine.plot_power_duration_curve(speed_loc1['10m'], time)
+        wind_turbine.plot_power_duration_curve(speed_loc1['10m'], time, years, selected_year)
     except Exception as e:
         assert False, f"plot_power_duration_curve raised an exception: {e}" # check if the function raises an exception
